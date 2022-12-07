@@ -45,12 +45,15 @@ public class ModelHelper<T> {
 	
 	public void identify(Class<T> clazz) throws Exception {
 
+		Class<T> xpto = (Class<T>) this.getClass();
+		
 		this.tClazz = clazz;
+		
 		inspecAllModel();
 	}
 	
 	public ModelHelper<T> inspectModel() throws Exception {
-
+				
 		inspecAllModel();
 
 		return this;
@@ -86,6 +89,7 @@ public class ModelHelper<T> {
 		// 1- from T knowing the class name ?????????
 
 		// String className = "T.getName()";
+		
 		String className = "org.app.ModelExample"; // como obter esta info vindo de T !!!!!
 
 		T newIns = null;
