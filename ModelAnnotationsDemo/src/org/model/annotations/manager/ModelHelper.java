@@ -2,6 +2,7 @@ package org.model.annotations.manager;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class ModelHelper<T> {
 	}
 
 	//Public Methods
-	
+
 	public void identify(Class<T> clazz) throws Exception {
 
 		Class<T> xpto = (Class<T>) this.getClass();
@@ -78,7 +79,7 @@ public class ModelHelper<T> {
 		return newInsrance;
 	}
 
-	public T getNewModelInstanceWithoutIndentiry() { //trie to solve T.gwtName()
+	public T getNewModelInstanceWithoutIndentiry() { //try to solve T.gwtName() 
 
 		// tries ----------------------
 		// C#
@@ -188,21 +189,27 @@ public class ModelHelper<T> {
 
 		Class<T> clazz = getT();
 
-		Annotation[] annotationArray = clazz.getAnnotations();
-
-		ModelClassAnnotation modelClassAnnotation = null;
-
-		for (Annotation item : annotationArray) {
-			
-			if (item.annotationType().equals(ModelClassAnnotation.class)) {
-				modelClassAnnotation = (ModelClassAnnotation) item;
-				break;
-			}
-		}
-
-		if (modelClassAnnotation == null)
+		if (!clazz.isAnnotationPresent(ModelClassAnnotation.class))
 			throw new Exception("Class '" + clazz.getSimpleName() + "' does not contains '" + ModelClassAnnotation.class
-					+ "' Annotation.");
+					+ "' Annotation.");;
+		
+		ModelClassAnnotation modelClassAnnotation = clazz.getAnnotation(ModelClassAnnotation.class);
+		
+//		Annotation[] annotationArray = clazz.getAnnotations();
+//
+//		ModelClassAnnotation modelClassAnnotation = null;
+//
+//		for (Annotation item : annotationArray) {
+//			
+//			if (item.annotationType().equals(ModelClassAnnotation.class)) {
+//				modelClassAnnotation = (ModelClassAnnotation) item;
+//				break;
+//			}
+//		}
+//
+//		if (modelClassAnnotation == null)
+//			throw new Exception("Class '" + clazz.getSimpleName() + "' does not contains '" + ModelClassAnnotation.class
+//					+ "' Annotation.");
 
 		this.modelId = modelClassAnnotation.id();
 		this.modelVersion = modelClassAnnotation.version();
@@ -233,19 +240,25 @@ public class ModelHelper<T> {
 
 	private ModelHelperFieldInfo getMoldelHelperFieldInfo(Field field) {
 
-		Annotation[] annotationArray = field.getAnnotations();
-
-		ModelFieldAnnotation modelFieldAnnotation = null;
-
-		for (Annotation item : annotationArray) {
-			
-			if (item.annotationType().equals(ModelFieldAnnotation.class)) {
-				modelFieldAnnotation = (ModelFieldAnnotation) item;
-				break;
-			}
-		}
-
+		if (!field.isAnnotationPresent(ModelFieldAnnotation.class))
+			return null;
+		
+		ModelFieldAnnotation modelFieldAnnotation = field.getAnnotation(ModelFieldAnnotation.class);
+		
+//		Annotation[] annotationArray = field.getAnnotations();
+//
+//		ModelFieldAnnotation modelFieldAnnotation = null;
+//
+//		for (Annotation item : annotationArray) {
+//			
+//			if (item.annotationType().equals(ModelFieldAnnotation.class)) {
+//				modelFieldAnnotation = (ModelFieldAnnotation) item;
+//				break;
+//			}
+//		}
+//
 		ModelHelperFieldInfo modelHelperFieldInfo = null;
+		
 		if (modelFieldAnnotation != null) {
 			modelHelperFieldInfo = new ModelHelperFieldInfo(modelFieldAnnotation.id(),
 					field.getName(),
@@ -268,4 +281,12 @@ public class ModelHelper<T> {
 		//}
 	}
 
+//	private void runMethodsExample() {
+//		
+//		Method[] methods = this.getClass().getDeclaredMethods();
+//		for(Method item : methods) {
+//			item.invoke(obj, args)
+//		}
+//			
+//	}
 }
